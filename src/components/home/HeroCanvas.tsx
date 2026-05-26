@@ -23,21 +23,7 @@ export default function HeroCanvas() {
           }}
         />
       ))}
-      {/* 右侧大型装饰圆 */}
-      <div className="absolute right-0 top-0 hidden md:flex items-center justify-center w-[45%] h-full">
-        <div className="relative w-80 h-80">
-          {/* 旋转渐变外环 */}
-          <div className="absolute inset-0 rounded-full animate-spin-slow"
-            style={{ background: 'conic-gradient(from 0deg, #FF6B6B, #A855F7, #4ECDC4, #FFE66D, #FF6B6B)', padding: 3 }}
-          >
-            <div className="w-full h-full rounded-full bg-[var(--color-bg-base)]" />
-          </div>
-          {/* 中心内容 */}
-          <div className="absolute inset-4 rounded-full flex items-center justify-center text-6xl animate-float">
-            ✨
-          </div>
-        </div>
-      </div>
+
     </div>
   )
 }
