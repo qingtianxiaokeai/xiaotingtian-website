@@ -5,7 +5,7 @@ interface Props {
   onChange: (tag: string) => void
 }
 
-const tags = ['全部', '前端', '设计', '游戏', '其他']
+const tags = ['全部', '前端', '游戏']
 
 export default function ProjectFilter({ active, onChange }: Props) {
   return (

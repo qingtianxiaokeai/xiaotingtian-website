@@ -41,7 +41,7 @@ function newFruit(bomb = false): FruitObj {
   }
 }
 
-export default function FruitNinja() {
+export default function FruitNinja({ autoStart }: { autoStart?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const stateRef = useRef({
     fruits: [] as FruitObj[],
@@ -217,6 +217,11 @@ export default function FruitNinja() {
     s.frameId = requestAnimationFrame(loop)
     return () => { cancelAnimationFrame(s.frameId) }
   }, [loop])
+
+  useEffect(() => {
+    if (autoStart) start()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const getPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     const rect = canvas.getBoundingClientRect()

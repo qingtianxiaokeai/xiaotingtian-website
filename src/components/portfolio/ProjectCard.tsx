@@ -40,7 +40,7 @@ export default function ProjectCard({ project }: Props) {
       <div className="rounded-2xl bg-[var(--color-bg-surface)] border border-[var(--color-bg-subtle)] overflow-hidden hover:border-[#FF6B6B]/30 hover:shadow-xl transition-shadow duration-300">
         {/* 封面 */}
         <div className="relative h-48 bg-gradient-to-br from-[#FF6B6B]/20 via-[#A855F7]/10 to-[#4ECDC4]/20 flex items-center justify-center text-6xl">
-          {emojiMap[project.slug] ?? '✨'}
+          {emojiMap[project.slug] ?? project.cover}
           {/* 悬停覆盖层 */}
           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
             <Link

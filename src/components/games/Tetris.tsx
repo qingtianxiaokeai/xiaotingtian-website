@@ -157,11 +157,16 @@ function getGhostY(board: Board, piece: Piece): number {
   return y
 }
 
-export default function Tetris() {
+export default function Tetris({ autoStart }: { autoStart?: boolean }) {
   const [state, dispatch] = useReducer(reducer, undefined, initState)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const tick = useCallback(() => dispatch({ type: 'TICK' }), [])
+
+  useEffect(() => {
+    if (autoStart) dispatch({ type: 'START' })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (state.status !== 'playing') {

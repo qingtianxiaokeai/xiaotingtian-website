@@ -150,9 +150,14 @@ const TILE_COLORS: Record<number, string> = {
   2048: 'bg-gradient-to-br from-[#FF6B6B] to-[#A855F7] text-white',
 }
 
-export default function Game2048() {
+export default function Game2048({ autoStart }: { autoStart?: boolean }) {
   const [state, dispatch] = useReducer(reducer, undefined, initState)
   const touchStart = useRef<{ x: number; y: number } | null>(null)
+
+  useEffect(() => {
+    if (autoStart) dispatch({ type: 'START' })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleKey = useCallback((e: KeyboardEvent) => {
     const map: Record<string, 'UP'|'DOWN'|'LEFT'|'RIGHT'> = {

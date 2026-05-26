@@ -20,7 +20,7 @@ function randomFood(snake: Pos[]): Pos {
 const INIT_SNAKE: Pos[] = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }]
 const INIT_DIR: Dir = 'RIGHT'
 
-export default function Snake() {
+export default function Snake({ autoStart }: { autoStart?: boolean }) {
   const [snake, setSnake] = useState<Pos[]>(INIT_SNAKE)
   const [food, setFood] = useState<Pos>({ x: 15, y: 10 })
   const [dir, setDir] = useState<Dir>(INIT_DIR)
@@ -54,6 +54,11 @@ export default function Snake() {
     pendingRef.current = null
     setScore(0)
     setStatus('playing')
+  }, [])
+
+  useEffect(() => {
+    if (autoStart) reset()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

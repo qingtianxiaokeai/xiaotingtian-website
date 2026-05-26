@@ -96,7 +96,7 @@ export default function WechatButton({ variant = 'link' }: Props) {
                 {/* 二维码 */}
                 <div className="mb-4 overflow-hidden rounded-xl bg-white p-3">
                   <Image
-                    src="/images/wxin.png"
+                    src="/images/weixinjietu.png"
                     alt="小青天的微信二维码"
                     width={240}
                     height={240}
