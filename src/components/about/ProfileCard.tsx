@@ -18,7 +18,7 @@ export default function ProfileCard() {
         </div>
         <div className="absolute inset-[5px] rounded-full overflow-hidden">
           <Image
-            src="/images/avatar-3d.png"
+            src="/images/zhuyei.png"
             alt="小青天头像"
             width={120}
             height={120}
