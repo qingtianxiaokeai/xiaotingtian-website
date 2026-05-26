@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
 const roles = [
-  { label: '前端开发工程师', color: 'from-[#FF6B6B] to-[#FFE66D]' },
-  { label: 'UI/UX 设计师', color: 'from-[#A855F7] to-[#4ECDC4]' },
-  { label: '创意内容创作者', color: 'from-[#4ECDC4] to-[#3B82F6]' },
+  { label: 'AI 数据训练师', color: 'from-[#FF6B6B] to-[#FFE66D]' },
+  { label: '电气工程师', color: 'from-[#3B82F6] to-[#4ECDC4]' },
+  { label: '单片机发烧友', color: 'from-[#A855F7] to-[#FF6B6B]' },
+  { label: '创意内容创造者', color: 'from-[#4ECDC4] to-[#A855F7]' },
 ]
 
 export default function HeroText() {
@@ -66,7 +67,7 @@ export default function HeroText() {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="max-w-md text-[var(--color-text-secondary)] leading-relaxed"
       >
-        热爱创意与技术的交汇点，用代码把设计变成真实体验。专注于构建兼顾颜值与性能的 Web 产品。
+        横跨 AI 数据工程、电气系统与嵌入式硬件，兼具创意内容输出能力。热衷于将技术与创造力融合，探索人机交互的无限可能。
       </motion.p>
 
       <motion.div

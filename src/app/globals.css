@@ -24,14 +24,14 @@
 }
 
 [data-theme="dark"] {
-  --color-bg-base: #0F0F1A;
-  --color-bg-surface: #1A1A2E;
-  --color-bg-subtle: #16213E;
-  --color-text-primary: #F9FAFB;
-  --color-text-secondary: #D1D5DB;
-  --color-text-muted: #6B7280;
-  --background: #0F0F1A;
-  --foreground: #F9FAFB;
+  --color-bg-base: #1C1B2E;
+  --color-bg-surface: #252440;
+  --color-bg-subtle: #302E52;
+  --color-text-primary: #F0EEFF;
+  --color-text-secondary: #C4BFDF;
+  --color-text-muted: #7B75A0;
+  --background: #1C1B2E;
+  --foreground: #F0EEFF;
 }
 
 * {

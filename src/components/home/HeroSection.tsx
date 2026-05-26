@@ -25,7 +25,7 @@ export default function HeroSection() {
                 width={480}
                 height={580}
                 priority
-                className="w-56 h-auto md:w-full md:max-w-[480px] drop-shadow-2xl mix-blend-multiply"
+                className="w-56 h-auto md:w-full md:max-w-[480px] drop-shadow-2xl"
               />
             </div>
           </div>
