@@ -40,16 +40,27 @@ export default function ContactForm() {
     }
   }
 
-  const inputClass = 'w-full rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-bg-subtle)] px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[#FF6B6B]/50 transition-colors text-sm'
-  const errorClass = 'mt-1 text-xs text-[#FF6B6B]'
+  const inputClass = [
+    'w-full rounded-xl px-4 py-3 text-sm',
+    'bg-[var(--color-bg-subtle)] border border-[var(--border)]',
+    'text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)]',
+    'focus:outline-none focus:border-[rgba(var(--accent-rgb),0.5)] transition-colors',
+  ].join(' ')
+
+  const errorClass = 'mt-1 text-xs text-[var(--error)]'
 
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-        <CheckCircle2 size={48} className="text-[#4ECDC4]" />
+        <CheckCircle2 size={48} style={{ color: 'var(--success)' }} />
         <h3 className="text-xl font-bold text-[var(--color-text-primary)]">消息已发送！</h3>
         <p className="text-[var(--color-text-secondary)]">我会尽快回复你，通常在 24 小时内。</p>
-        <button onClick={() => setStatus('idle')} className="mt-2 text-sm text-[#FF6B6B] underline underline-offset-2">再发一条</button>
+        <button
+          onClick={() => setStatus('idle')}
+          className="mt-2 text-sm text-[var(--accent)] underline underline-offset-2"
+        >
+          再发一条
+        </button>
       </div>
     )
   }
@@ -79,18 +90,38 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <textarea {...register('message')} placeholder="告诉我你的想法和需求..." rows={5} className={inputClass} />
+        <textarea
+          {...register('message')}
+          placeholder="告诉我你的想法和需求..."
+          rows={5}
+          className={inputClass}
+        />
         {errors.message && <p className={errorClass}>{errors.message.message}</p>}
       </div>
 
       {status === 'error' && (
-        <p className="text-sm text-[#FF6B6B] bg-[#FF6B6B]/10 px-4 py-3 rounded-xl">发送失败，请稍后重试或直接发邮件联系我。</p>
+        <p
+          className="text-sm px-4 py-3 rounded-xl"
+          style={{ color: 'var(--error)', background: 'rgba(var(--error), 0.08)' }}
+        >
+          发送失败，请稍后重试或直接发邮件联系我。
+        </p>
       )}
 
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#FF6B6B] to-[#A855F7] px-8 py-3.5 font-medium text-white shadow-lg hover:opacity-90 disabled:opacity-60 transition-all active:scale-95"
+        className="flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 font-semibold text-white shadow-lg transition-all active:scale-95 disabled:opacity-60"
+        style={{
+          background: 'var(--accent)',
+          boxShadow: '0 4px 16px rgba(var(--accent-rgb), 0.25)',
+        }}
+        onMouseEnter={e => {
+          if (status !== 'loading') (e.currentTarget as HTMLElement).style.background = 'var(--accent-hover)'
+        }}
+        onMouseLeave={e => {
+          (e.currentTarget as HTMLElement).style.background = 'var(--accent)'
+        }}
       >
         <Send size={16} />
         {status === 'loading' ? '发送中...' : '发送消息'}
