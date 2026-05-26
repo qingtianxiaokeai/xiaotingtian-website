@@ -20,7 +20,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20)
+    const handler = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
@@ -30,32 +30,33 @@ export default function Navbar() {
       className={cn(
         'fixed top-3 left-1/2 z-50 -translate-x-1/2 transition-all duration-300',
         scrolled
-          ? 'w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-[var(--color-bg-surface)]/80 backdrop-blur-md shadow-lg border border-[var(--color-bg-subtle)]'
+          ? 'w-[calc(100%-2rem)] max-w-4xl rounded-2xl border border-[var(--border)] bg-[rgba(var(--bg-rgb),0.85)] backdrop-blur-[12px] shadow-sm'
           : 'w-full max-w-5xl'
       )}
     >
-      <nav className="flex items-center justify-between px-6 py-3">
-        <Link href="/" className="text-xl font-bold gradient-text">
+      <nav className="flex items-center justify-between px-5 py-3">
+        <Link
+          href="/"
+          className="text-lg font-bold text-[var(--color-text-primary)] tracking-tight"
+          style={{ fontFamily: 'var(--font-heading)' }}
+        >
           小青天
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-1">
+        <ul className="hidden md:flex items-center gap-0.5">
           {links.map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
                 className={cn(
-                  'relative px-4 py-2 rounded-full text-sm font-medium transition-colors',
+                  'relative px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                   pathname === href
-                    ? 'text-[#FF6B6B] bg-[#FF6B6B]/10'
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+                    ? 'text-[var(--accent)] bg-[var(--accent-light)]'
+                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[rgba(var(--text-rgb),0.05)]'
                 )}
               >
                 {label}
-                {pathname === href && (
-                  <span className="absolute inset-x-4 bottom-1 h-0.5 rounded-full bg-gradient-to-r from-[#FF6B6B] to-[#A855F7]" />
-                )}
               </Link>
             </li>
           ))}
@@ -64,18 +65,18 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <button
-            className="flex md:hidden items-center justify-center h-9 w-9 rounded-full hover:bg-[var(--color-bg-subtle)]"
+            className="flex md:hidden items-center justify-center h-9 w-9 rounded-lg hover:bg-[var(--color-bg-subtle)] transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="菜单"
           >
-            {menuOpen ? <X size={18} /> : <Menu size={18} />}
+            {menuOpen ? <X size={17} /> : <Menu size={17} />}
           </button>
         </div>
       </nav>
 
       {/* Mobile menu */}
       {menuOpen && (
-        <ul className="md:hidden flex flex-col gap-1 px-4 pb-4">
+        <ul className="md:hidden flex flex-col gap-1 px-3 pb-3">
           {links.map(({ href, label }) => (
             <li key={href}>
               <Link
@@ -84,7 +85,7 @@ export default function Navbar() {
                 className={cn(
                   'block px-4 py-2.5 rounded-xl text-sm font-medium transition-colors',
                   pathname === href
-                    ? 'bg-[#FF6B6B]/10 text-[#FF6B6B]'
+                    ? 'bg-[var(--accent-light)] text-[var(--accent)]'
                     : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-subtle)]'
                 )}
               >

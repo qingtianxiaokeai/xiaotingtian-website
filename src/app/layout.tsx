@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Noto_Sans_SC } from 'next/font/google'
+import { Noto_Sans_SC, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -11,6 +11,13 @@ const noto = Noto_Sans_SC({
   variable: '--font-noto',
   subsets: ['latin'],
   weight: ['400', '500', '700'],
+  display: 'swap',
+})
+
+const space = Space_Grotesk({
+  variable: '--font-space',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 })
 
@@ -28,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" className={`${noto.variable} h-full`} suppressHydrationWarning>
+    <html lang="zh-CN" className={`${noto.variable} ${space.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col antialiased bg-[var(--background)] text-[var(--foreground)]">
         <ScrollProgressBar />
         <CursorGlow />

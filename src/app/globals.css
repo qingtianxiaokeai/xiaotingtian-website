@@ -1,100 +1,168 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #FF6B6B;
-  --color-secondary: #4ECDC4;
-  --color-accent: #FFE66D;
-  --color-purple: #A855F7;
-  --color-blue: #3B82F6;
+  /* 主色：天蓝 */
+  --color-accent: #0AA9DB;
 
-  --color-bg-base: #FAFAFA;
+  /* 浅色模式背景 */
+  --color-bg-base: #F2EFE9;
   --color-bg-surface: #FFFFFF;
-  --color-bg-subtle: #F3F4F6;
+  --color-bg-subtle: #EEEAE3;
 
-  --color-text-primary: #1A1A2E;
-  --color-text-secondary: #6B7280;
-  --color-text-muted: #9CA3AF;
+  /* 浅色模式文字（固定值，深色模式通过 [data-theme] 覆盖）*/
+  --color-text-primary: #0B1926;
+  --color-text-secondary: #4A5E6E;
+  --color-text-muted: #7A8E9A;
 
   --font-sans: var(--font-noto), system-ui, sans-serif;
+  --font-heading: var(--font-space), var(--font-noto), system-ui, sans-serif;
 }
 
+/* ===== 运行时变量（可被深色模式覆盖）===== */
 :root {
   --background: var(--color-bg-base);
   --foreground: var(--color-text-primary);
+  --accent: #0AA9DB;
+  --accent-hover: #0891C2;
+  --accent-rgb: 10, 169, 219;
+  --accent-light: rgba(10, 169, 219, 0.1);
+  --bg-rgb: 242, 239, 233;
+  --border: rgba(11, 25, 38, 0.12);
+  --border-hover: rgba(10, 169, 219, 0.35);
+  --radius: 12px;
+  --radius-lg: 16px;
 }
 
 [data-theme="dark"] {
-  --color-bg-base: #1C1B2E;
-  --color-bg-surface: #252440;
-  --color-bg-subtle: #302E52;
-  --color-text-primary: #F0EEFF;
-  --color-text-secondary: #C4BFDF;
-  --color-text-muted: #7B75A0;
-  --background: #1C1B2E;
-  --foreground: #F0EEFF;
+  --color-bg-base: #0B1926;
+  --color-bg-surface: rgba(255, 255, 255, 0.07);
+  --color-bg-subtle: rgba(255, 255, 255, 0.04);
+  --color-text-primary: rgba(255, 255, 255, 0.88);
+  --color-text-secondary: rgba(255, 255, 255, 0.54);
+  --color-text-muted: rgba(255, 255, 255, 0.30);
+  --color-accent: #28C2F0;
+  --background: #0B1926;
+  --foreground: rgba(255, 255, 255, 0.88);
+  --accent: #28C2F0;
+  --accent-hover: #3DCEF8;
+  --accent-rgb: 40, 194, 240;
+  --accent-light: rgba(40, 194, 240, 0.1);
+  --bg-rgb: 11, 25, 38;
+  --border: rgba(255, 255, 255, 0.11);
+  --border-hover: rgba(40, 194, 240, 0.4);
 }
 
-* {
-  box-sizing: border-box;
-}
+/* ===== 基础重置 ===== */
+* { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+/* ===== 滚动条：单色主色 ===== */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+  opacity: 0.7;
 }
 
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* ===== 焦点环 ===== */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+/* ===== L2 入场动效：fadeInUp + stagger ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.animate-float { animation: float 6s ease-in-out infinite; }
-.animate-float-slow { animation: float 8s ease-in-out infinite; }
-.animate-spin-slow { animation: spin-slow 8s linear infinite; }
-.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+/* ===== Glow Card hover（主色边框发光）===== */
+.glow-card {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.glow-card:hover {
+  border-color: rgba(var(--accent-rgb), 0.3) !important;
+  box-shadow:
+    0 0 0 1px rgba(var(--accent-rgb), 0.12),
+    0 8px 32px rgba(var(--accent-rgb), 0.08);
+  transform: translateY(-2px);
+}
 
-.gradient-text {
-  background: linear-gradient(135deg, #FF6B6B, #A855F7, #4ECDC4);
+/* ===== SpotlightCard 追光（CSS 部分，JS 注入 --mouse-x/y）===== */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+.spotlight-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(var(--accent-rgb), 0.07),
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.spotlight-card:hover::after { opacity: 1; }
+
+/* ===== Marquee 横滚带 ===== */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  gap: 56px;
+  animation: marqueeScroll 24s linear infinite;
+  width: max-content;
+  will-change: transform;
+}
+.marquee-wrap {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+/* ===== 深色模式 Hero H1 渐变文字 ===== */
+[data-theme="dark"] .hero-gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, rgba(var(--accent-rgb), 0.6) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.gradient-border {
-  position: relative;
-  background: linear-gradient(var(--color-bg-surface), var(--color-bg-surface)) padding-box,
-    linear-gradient(135deg, #FF6B6B, #A855F7, #4ECDC4) border-box;
-  border: 2px solid transparent;
-}
-
-.card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card-hover:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(255, 107, 107, 0.2);
-}
-
-/* 自定义滚动条 */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(#FF6B6B, #A855F7);
-  border-radius: 3px;
+/* ===== Reduced Motion 降级 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .marquee-track { animation: none; }
 }
