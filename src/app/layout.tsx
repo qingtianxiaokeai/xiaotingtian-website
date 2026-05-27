@@ -7,6 +7,7 @@ import PageTransition from '@/components/layout/PageTransition'
 import CursorGlow from '@/components/ui/CursorGlow'
 import ScrollProgressBar from '@/components/ui/ScrollProgressBar'
 import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister'
+import InstallPrompt from '@/components/pwa/InstallPrompt'
 
 const noto = Noto_Sans_SC({
   variable: '--font-noto',
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-CN" className={`${noto.variable} ${space.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col antialiased bg-[var(--background)] text-[var(--foreground)]">
         <ServiceWorkerRegister />
+        <InstallPrompt />
         <ScrollProgressBar />
         <CursorGlow />
         <Navbar />
