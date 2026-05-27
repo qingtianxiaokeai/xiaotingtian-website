@@ -3,7 +3,7 @@
  * 策略：有网络时始终拉取最新内容；无网络时回退到缓存
  */
 
-const CACHE_NAME = 'xiaotingtian-v3'
+const CACHE_NAME = 'xiaotingtian-v4'
 
 // 安装时预缓存首页，确保离线时有内容可显示
 self.addEventListener('install', event => {
@@ -33,26 +33,26 @@ self.addEventListener('fetch', event => {
 
   // 只处理同源请求，忽略 API、外部资源等
   if (url.origin !== location.origin) return
-
-  // API 请求（联系表单）不走缓存
   if (url.pathname.startsWith('/api/')) return
+
+  // ★ 视频文件不走 SW 缓存：
+  //   视频依赖 HTTP Range 分段请求，SW 的 cache.match 无法匹配 Range 请求，
+  //   拦截后会破坏移动端视频流式加载，导致黑屏/无法播放。
+  if (request.destination === 'video') return
 
   if (request.mode === 'navigate') {
     // ── 页面导航：NetworkFirst ──
-    // 有网络就用最新页面，无网络返回缓存首页
     event.respondWith(
       fetch(request)
         .then(response => {
-          // 顺手把新页面存入缓存
           const clone = response.clone()
           caches.open(CACHE_NAME).then(cache => cache.put(request, clone))
           return response
         })
         .catch(() => caches.match('/'))
     )
-  } else if (['style', 'script', 'image', 'font', 'video'].includes(request.destination)) {
+  } else if (['style', 'script', 'image', 'font'].includes(request.destination)) {
     // ── 静态资源：StaleWhileRevalidate ──
-    // 立即返回缓存（快），同时后台更新缓存
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
         cache.match(request).then(cached => {

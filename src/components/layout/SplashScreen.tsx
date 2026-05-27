@@ -2,22 +2,22 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * 全屏加载画面。
- * 设计：品牌文字「小青天」始终可见（视频播时变为半透明叠加），
- * 不依赖视频是否成功播放，确保手机端不再出现纯黑屏。
+ * 全屏视频加载画面，手机/电脑同一套逻辑。
+ * - 视频正常播完 + 页面已加载 → 消失
+ * - 视频播完但页面还在加载 → 循环，等页面就绪
+ * - 10 秒兜底：视频未能加载时强制消失
  */
 export default function SplashScreen() {
-  const [fading, setFading]           = useState(false)
-  const [dismissed, setDismissed]     = useState(false)
-  const [videoStarted, setVideoStarted] = useState(false)
-  const [muted, setMuted]             = useState(true)
+  const [fading, setFading]   = useState(false)
+  const [dismissed, setDismissed] = useState(false)
+  const [muted, setMuted]     = useState(true)
   const videoRef   = useRef<HTMLVideoElement>(null)
   const pageLoaded = useRef(false)
   const didDismiss = useRef(false)
 
   useEffect(() => {
-    // 超时兜底：5 秒内必然消失
-    const timer = setTimeout(() => dismiss(), 5_000)
+    // 10 秒兜底（最先设，不受其他逻辑影响）
+    const timer = setTimeout(() => dismiss(), 10_000)
 
     // 监听页面加载完成
     if (document.readyState === 'complete') {
@@ -27,12 +27,12 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 视频：修复 React muted bug，手动设置
+    // 修复 React muted prop bug：必须直接写 DOM
     const v = videoRef.current
     if (v) {
       v.muted = true
       v.setAttribute('webkit-playsinline', '')
-      v.play().catch(() => {})   // 播放失败交给 timer 兜底
+      v.play().catch(() => {})   // 静默忽略，由 10s timer 兜底
     }
 
     return () => clearTimeout(timer)
@@ -66,41 +66,19 @@ export default function SplashScreen() {
 
   return (
     <div className={`splash-overlay${fading ? ' splash-fade-out' : ''}`}>
-
-      {/* 视频层：就绪后淡入（位于底层） */}
       <video
         ref={videoRef}
         src="/videos/intro.mp4"
         preload="auto"
         playsInline
-        onPlay={() => setVideoStarted(true)}
         onEnded={handleVideoEnded}
-        onError={() => {}}
+        onError={dismiss}
         className="splash-video"
-        style={{ opacity: videoStarted ? 1 : 0 }}
       />
-
-      {/* 品牌层：始终显示在视频之上
-          视频播放时半透明（让视频透出），未播时全显（防黑屏） */}
-      <div
-        className="splash-loader"
-        style={{ opacity: videoStarted ? 0.18 : 1 }}
-      >
-        <p className="splash-title">小青天</p>
-        <div className="splash-dots">
-          <span /><span /><span />
-        </div>
-      </div>
-
-      {/* 声音按钮：仅视频播放时显示 */}
-      {videoStarted && (
-        <button onClick={toggleMute} className="splash-mute-btn"
-          aria-label={muted ? '开启声音' : '关闭声音'}>
-          {muted ? '🔇' : '🔊'}
-        </button>
-      )}
-
-      {/* 跳过：任何情况下的出口 */}
+      <button onClick={toggleMute} className="splash-mute-btn"
+        aria-label={muted ? '开启声音' : '关闭声音'}>
+        {muted ? '🔇' : '🔊'}
+      </button>
       <button onClick={dismiss} className="splash-skip-btn" aria-label="跳过">
         跳过
       </button>
