@@ -3,15 +3,16 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * 全屏视频加载画面。
- * 关键：视频元素必须带着 src 一起被创建，浏览器才能在渲染时决定自动播放。
- * 用 state 控制 src，useEffect 检测设备后赋值 → React 带 src 渲染视频元素 → autoPlay 生效。
+ * 核心技巧：
+ * 1. poster 封面图 → 视频加载时立刻显示静态画面，无黑屏等待
+ * 2. state 控制 src → 视频元素带 src 创建，浏览器 autoPlay 决策正确
+ * 3. 手机用 1280p 压缩版（590 KB），电脑用原画质
  */
 export default function SplashScreen() {
-  const [fading, setFading]     = useState(false)
+  const [fading, setFading]       = useState(false)
   const [dismissed, setDismissed] = useState(false)
-  const [muted, setMuted]       = useState(true)
-  // src 从空字符串开始，避免 SSR/hydration 不匹配；useEffect 检测设备后设置
-  const [videoSrc, setVideoSrc] = useState('')
+  const [muted, setMuted]         = useState(true)
+  const [videoSrc, setVideoSrc]   = useState('')
   const videoRef   = useRef<HTMLVideoElement>(null)
   const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pageLoaded = useRef(false)
@@ -32,8 +33,11 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 统一用原画质，触发 re-render 后视频元素带 src 创建，autoPlay 可正常生效
-    setVideoSrc('/videos/intro.mp4')
+    // 手机用 590 KB 压缩版，电脑用原画质
+    const isMobile =
+      window.innerWidth <= 768 ||
+      /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+    setVideoSrc(isMobile ? '/videos/intro-mobile-hd.mp4' : '/videos/intro.mp4')
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
@@ -42,7 +46,7 @@ export default function SplashScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // videoSrc 确定后（视频元素刚创建），修复 React muted prop bug
+  // videoSrc 确定后，修复 React muted prop bug
   useEffect(() => {
     if (!videoSrc) return
     const v = videoRef.current
@@ -55,12 +59,11 @@ export default function SplashScreen() {
   function dismiss() {
     if (didDismiss.current) return
     didDismiss.current = true
-    document.body.style.overflow = ''  // 解锁滚动
+    document.body.style.overflow = ''
     setFading(true)
     setTimeout(() => setDismissed(true), 400)
   }
 
-  /** 视频开始播放 → 取消兜底计时器 */
   function handlePlay() {
     if (timerRef.current) {
       clearTimeout(timerRef.current)
@@ -68,7 +71,6 @@ export default function SplashScreen() {
     }
   }
 
-  /** 视频有数据可播 → 兜底 play()（防止 autoPlay 不触发）*/
   function handleCanPlay() {
     const v = videoRef.current
     if (v && v.paused) {
@@ -97,11 +99,11 @@ export default function SplashScreen() {
 
   return (
     <div className={`splash-overlay${fading ? ' splash-fade-out' : ''}`}>
-      {/* videoSrc 设置后才渲染视频元素，确保元素创建时就带 src */}
       {videoSrc && (
         <video
           ref={videoRef}
           src={videoSrc}
+          poster="/videos/intro-poster.jpg"
           autoPlay
           muted
           preload="auto"
