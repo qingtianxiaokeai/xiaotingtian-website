@@ -17,6 +17,12 @@ const WechatIcon = () => (
 export default function WechatButton({ variant = 'link' }: Props) {
   const [open, setOpen] = useState(false)
 
+  // 页面加载时后台预加载二维码图片，点击时秒开
+  useEffect(() => {
+    const img = new window.Image()
+    img.src = '/images/weixinjietu.png'
+  }, [])
+
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
@@ -101,7 +107,6 @@ export default function WechatButton({ variant = 'link' }: Props) {
                     width={240}
                     height={240}
                     className="h-auto w-full"
-                    unoptimized
                   />
                 </div>
 
