@@ -3,7 +3,7 @@
  * 策略：有网络时始终拉取最新内容；无网络时回退到缓存
  */
 
-const CACHE_NAME = 'xiaotingtian-v8'
+const CACHE_NAME = 'xiaotingtian-v9'
 
 // 安装时预缓存首页，确保离线时有内容可显示
 self.addEventListener('install', event => {
