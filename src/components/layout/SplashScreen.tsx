@@ -7,8 +7,10 @@ import { useEffect, useRef, useState } from 'react'
  *   - 视频播完 + 页面已加载 → 淡出消失
  *   - 视频播完但页面未加载 → 循环播放，等页面就绪后消失
  *   - 页面加载完但视频未播完 → 等视频自然结束再消失
- *   - 视频加载失败 / 超过 10 秒 → 强制消失（防止永久黑屏）
- * 声音：默认静音（移动端 autoplay 要求），右下角按钮可切换
+ *   - autoplay 被拦截 / 加载失败 / 超过 10 秒 → 强制消失
+ *
+ * 注意：React 有已知 bug：JSX 的 muted/autoPlay 不能可靠写入 DOM，
+ *       必须在 useEffect 里通过 ref 手动设置，再调 video.play()。
  */
 export default function SplashScreen() {
   const [fading, setFading]       = useState(false)
@@ -19,6 +21,15 @@ export default function SplashScreen() {
   const didDismiss = useRef(false)
 
   useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+
+    // ★ 修复 React muted bug：直接写 DOM 属性，JSX prop 不可靠
+    v.muted = true
+
+    // 手动触发播放，catch 处理 autoplay 被拦截的情况
+    v.play().catch(() => dismiss())
+
     // 监听页面加载完成
     if (document.readyState === 'complete') {
       pageLoaded.current = true
@@ -27,9 +38,10 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 最多 10 秒兜底，防止视频加载失败导致永久黑屏
+    // 最多 10 秒兜底
     const timer = setTimeout(() => dismiss(), 10_000)
     return () => clearTimeout(timer)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function dismiss() {
@@ -43,7 +55,6 @@ export default function SplashScreen() {
     if (pageLoaded.current) {
       dismiss()
     } else {
-      // 页面还没加载好，循环播放
       const v = videoRef.current
       if (v) { v.currentTime = 0; void v.play() }
     }
@@ -60,14 +71,13 @@ export default function SplashScreen() {
 
   return (
     <div className={`splash-overlay${fading ? ' splash-fade-out' : ''}`}>
+      {/* autoPlay/muted 不写 JSX prop，全由 useEffect 通过 ref 控制 */}
       <video
         ref={videoRef}
         src="/videos/intro.mp4"
-        autoPlay
-        muted        // 初始静音，保证移动端自动播放
-        playsInline  // iOS 不强制全屏
+        playsInline
         onEnded={handleVideoEnded}
-        onError={dismiss}   // 视频加载失败立即消失
+        onError={dismiss}
         className="splash-video"
       />
       <button
