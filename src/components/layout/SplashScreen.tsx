@@ -3,19 +3,22 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * 全屏视频加载画面。
- * 逻辑：视频播完 + 页面已加载 → 消失；页面未加载 → 循环等待。
- * 兜底：超时 8s 强制消失，视频加载失败立即消失，"跳过"按钮随时可退。
+ * - 缓冲时：显示品牌背景 + 站名 + 加载动画，不再是纯黑屏
+ * - 视频就绪后：淡入播放
+ * - 播完 + 页面已加载 → 消失；否则循环等待
+ * - 超时 8s / 加载失败 → 强制消失
  */
 export default function SplashScreen() {
-  const [fading, setFading]       = useState(false)
-  const [dismissed, setDismissed] = useState(false)
-  const [muted, setMuted]         = useState(true)
+  const [fading, setFading]         = useState(false)
+  const [dismissed, setDismissed]   = useState(false)
+  const [videoStarted, setVideoStarted] = useState(false)
+  const [muted, setMuted]           = useState(true)
   const videoRef   = useRef<HTMLVideoElement>(null)
   const pageLoaded = useRef(false)
   const didDismiss = useRef(false)
 
   useEffect(() => {
-    // ★ 超时兜底必须第一个设，不受 videoRef 是否可用影响
+    // 超时兜底：必须最先设，不受任何条件影响
     const timer = setTimeout(() => dismiss(), 8_000)
 
     // 监听页面加载完成
@@ -26,11 +29,10 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 视频播放（React muted prop bug 修复：直接写 DOM 属性）
+    // 修复 React muted prop bug：直接操作 DOM
     const v = videoRef.current
     if (v) {
       v.muted = true
-      // webkit-playsinline：旧版 iOS Safari 兼容
       v.setAttribute('webkit-playsinline', '')
       v.play().catch(() => dismiss())
     }
@@ -66,20 +68,38 @@ export default function SplashScreen() {
 
   return (
     <div className={`splash-overlay${fading ? ' splash-fade-out' : ''}`}>
+
+      {/* 缓冲占位：视频播放前显示，播放后淡出 */}
+      <div
+        className="splash-loader"
+        style={{ opacity: videoStarted ? 0 : 1, pointerEvents: videoStarted ? 'none' : 'auto' }}
+      >
+        <p className="splash-title">小青天</p>
+        <div className="splash-dots">
+          <span /><span /><span />
+        </div>
+      </div>
+
+      {/* 视频：缓冲时透明，播放时淡入 */}
       <video
         ref={videoRef}
         src="/videos/intro.mp4"
+        preload="auto"
         playsInline
+        onPlay={() => setVideoStarted(true)}
         onEnded={handleVideoEnded}
         onError={dismiss}
         className="splash-video"
+        style={{ opacity: videoStarted ? 1 : 0 }}
       />
+
       {/* 静音切换 */}
       <button onClick={toggleMute} className="splash-mute-btn"
         aria-label={muted ? '开启声音' : '关闭声音'}>
         {muted ? '🔇' : '🔊'}
       </button>
-      {/* 跳过按钮：视频无法播放时的最终出口 */}
+
+      {/* 跳过按钮 */}
       <button onClick={dismiss} className="splash-skip-btn" aria-label="跳过">
         跳过
       </button>

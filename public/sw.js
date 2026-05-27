@@ -50,7 +50,7 @@ self.addEventListener('fetch', event => {
         })
         .catch(() => caches.match('/'))
     )
-  } else if (['style', 'script', 'image', 'font'].includes(request.destination)) {
+  } else if (['style', 'script', 'image', 'font', 'video'].includes(request.destination)) {
     // ── 静态资源：StaleWhileRevalidate ──
     // 立即返回缓存（快），同时后台更新缓存
     event.respondWith(
