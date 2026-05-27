@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
+const isGitHubPages = process.env.NEXT_PUBLIC_BUILD_TARGET === 'github';
+
 const nextConfig: NextConfig = {
+  ...(isGitHubPages && {
+    output: 'export',
+    basePath: '/xiaotingtian-website',
+    images: { unoptimized: true },
+  }),
   turbopack: {},
   webpack(config) {
     config.watchOptions = {

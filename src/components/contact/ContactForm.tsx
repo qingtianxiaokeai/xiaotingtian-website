@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Send, CheckCircle2 } from 'lucide-react'
+import { Send, CheckCircle2, Mail } from 'lucide-react'
 import type { ContactFormData } from '@/types'
+import WechatButton from '@/components/ui/WechatButton'
 
 const schema = z.object({
   name: z.string().min(2, '请输入至少 2 个字的姓名'),
@@ -48,6 +49,11 @@ export default function ContactForm() {
   ].join(' ')
 
   const errorClass = 'mt-1 text-xs text-[var(--error)]'
+
+  // GitHub Pages 静态构建：API 路由不可用，改为联系卡片
+  if (process.env.NEXT_PUBLIC_BUILD_TARGET === 'github') {
+    return <StaticContactCard />
+  }
 
   if (status === 'success') {
     return (
@@ -127,5 +133,36 @@ export default function ContactForm() {
         {status === 'loading' ? '发送中...' : '发送消息'}
       </button>
     </form>
+  )
+}
+
+// 静态构建（GitHub Pages）使用的联系卡片
+function StaticContactCard() {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
+        通过以下方式联系我，期待我们的合作 ✨
+      </p>
+
+      <a
+        href="mailto:2716757063@qq.com"
+        className="flex items-center gap-4 p-4 rounded-2xl w-full
+          bg-[var(--color-bg-surface)] border border-[var(--border)]
+          hover:border-[rgba(var(--accent-rgb),0.3)] transition-colors"
+      >
+        <div
+          className="flex-shrink-0 flex items-center justify-center w-11 h-11 rounded-xl"
+          style={{ background: 'var(--accent-light)' }}
+        >
+          <Mail size={20} style={{ color: 'var(--accent)' }} />
+        </div>
+        <div>
+          <p className="text-xs text-[var(--color-text-muted)] mb-0.5">邮件</p>
+          <p className="font-medium text-[var(--color-text-primary)]">2716757063@qq.com</p>
+        </div>
+      </a>
+
+      <WechatButton variant="card-item" />
+    </div>
   )
 }
