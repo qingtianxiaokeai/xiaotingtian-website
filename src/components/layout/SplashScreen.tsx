@@ -18,8 +18,8 @@ export default function SplashScreen() {
   const didDismiss = useRef(false)
 
   useEffect(() => {
-    // 超时兜底：必须最先设，不受任何条件影响
-    const timer = setTimeout(() => dismiss(), 8_000)
+    // 超时兜底：必须最先设，不受任何条件影响（5s = 视频时长）
+    const timer = setTimeout(() => dismiss(), 5_000)
 
     // 监听页面加载完成
     if (document.readyState === 'complete') {
