@@ -3,21 +3,23 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * 全屏视频加载画面，手机/电脑同一套逻辑。
- * - 视频正常播完 + 页面已加载 → 消失
+ * - 视频真正开始播放 → 取消超时，视频播完再消失
  * - 视频播完但页面还在加载 → 循环，等页面就绪
- * - 10 秒兜底：视频未能加载时强制消失
+ * - 20 秒兜底：视频始终无法加载时强制消失（手机慢网容忍）
  */
 export default function SplashScreen() {
-  const [fading, setFading]   = useState(false)
+  const [fading, setFading]       = useState(false)
   const [dismissed, setDismissed] = useState(false)
-  const [muted, setMuted]     = useState(true)
+  const [muted, setMuted]         = useState(true)
   const videoRef   = useRef<HTMLVideoElement>(null)
+  const timerRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pageLoaded = useRef(false)
   const didDismiss = useRef(false)
 
   useEffect(() => {
-    // 10 秒兜底（最先设，不受其他逻辑影响）
-    const timer = setTimeout(() => dismiss(), 10_000)
+    // 兜底计时器（最先设，不受其他逻辑影响）
+    // 手机慢网给 20s 机会；视频一旦开始播放，此计时器会被取消
+    timerRef.current = setTimeout(() => dismiss(), 20_000)
 
     // 监听页面加载完成
     if (document.readyState === 'complete') {
@@ -27,16 +29,16 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 修复 React muted prop bug：必须直接写 DOM + attribute
+    // 修复 React muted prop bug + 补全 HTML attribute（安卓 Chrome 自动播放策略需要）
     const v = videoRef.current
     if (v) {
       v.muted = true
-      v.setAttribute('muted', '')            // 确保 HTML attribute 存在（安卓 Chrome 自动播放策略需要）
+      v.setAttribute('muted', '')
       v.setAttribute('webkit-playsinline', '')
-      v.play().catch(() => {})   // 静默忽略，由 10s timer 兜底
+      v.play().catch(() => {})   // 静默忽略；autoPlay 属性会在数据就绪后自动触发
     }
 
-    return () => clearTimeout(timer)
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -45,6 +47,14 @@ export default function SplashScreen() {
     didDismiss.current = true
     setFading(true)
     setTimeout(() => setDismissed(true), 600)
+  }
+
+  /** 视频真正开始播放 → 取消兜底计时器，让视频正常播完 */
+  function handlePlay() {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
   }
 
   function handleVideoEnded() {
@@ -70,10 +80,11 @@ export default function SplashScreen() {
       <video
         ref={videoRef}
         src="/videos/intro.mp4"
-        autoPlay          /* 安卓 Chrome 自动播放需要此属性 */
-        muted             /* React muted 渲染 bug 靠 useEffect 修复，属性仍保留 */
+        autoPlay
+        muted
         preload="auto"
         playsInline
+        onPlay={handlePlay}
         onEnded={handleVideoEnded}
         onError={dismiss}
         className="splash-video"
