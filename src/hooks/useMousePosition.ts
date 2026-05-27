@@ -1,36 +1,27 @@
 'use client'
-import { useEffect } from 'react'
-import { useMotionValue } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 
-export function useMouseMotionValue() {
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-
-  useEffect(() => {
-    const handleMove = (e: MouseEvent) => {
-      x.set(e.clientX)
-      y.set(e.clientY)
-    }
-    window.addEventListener('mousemove', handleMove, { passive: true })
-    return () => window.removeEventListener('mousemove', handleMove)
-  }, [x, y])
-
-  return { x, y }
-}
-
-// 保留原有 hook 供其他地方使用
+/**
+ * 追踪鼠标位置。
+ * 原版使用 framer-motion useMotionValue，现改为原生 useRef，
+ * 不引入任何第三方库。CursorGlow 已改用直接的 mousemove 监听，
+ * 此 hook 保留供未来使用。
+ */
 export function useMousePosition() {
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
+  const x = useRef(0)
+  const y = useRef(0)
 
   useEffect(() => {
-    const handleMove = (e: MouseEvent) => {
-      x.set(e.clientX)
-      y.set(e.clientY)
+    const move = (e: MouseEvent) => {
+      x.current = e.clientX
+      y.current = e.clientY
     }
-    window.addEventListener('mousemove', handleMove, { passive: true })
-    return () => window.removeEventListener('mousemove', handleMove)
-  }, [x, y])
+    window.addEventListener('mousemove', move, { passive: true })
+    return () => window.removeEventListener('mousemove', move)
+  }, [])
 
   return { x, y }
 }
+
+// 别名，兼容旧代码
+export { useMousePosition as useMouseMotionValue }

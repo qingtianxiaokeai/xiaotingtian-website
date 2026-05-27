@@ -1,7 +1,6 @@
 'use client'
 import Link from 'next/link'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { ExternalLink, GitBranch } from 'lucide-react'
 import type { Project } from '@/types'
 import Badge from '@/components/ui/Badge'
@@ -29,12 +28,15 @@ export default function ProjectCard({ project }: Props) {
   }
 
   return (
-    <motion.div
+    <div
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      style={{ perspective: '800px', transformStyle: 'preserve-3d' }}
+      style={{
+        perspective: '800px',
+        transformStyle: 'preserve-3d',
+        transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: 'transform 0.15s ease',
+      }}
       className="group"
     >
       <div className="rounded-2xl bg-[var(--color-bg-surface)] border border-[var(--color-bg-subtle)] overflow-hidden hover:border-[#FF6B6B]/30 hover:shadow-xl transition-shadow duration-300">
@@ -76,6 +78,6 @@ export default function ProjectCard({ project }: Props) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

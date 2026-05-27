@@ -159,6 +159,28 @@ body {
   background-clip: text;
 }
 
+/* ===== 页面切换入场（替代 framer-motion PageTransition）===== */
+@keyframes pageFadeIn {
+  from { opacity: 0.5; transform: translateY(8px); }
+  to   { opacity: 1;   transform: translateY(0); }
+}
+.page-fade-in {
+  animation: pageFadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ===== 微信弹窗（替代 framer-motion AnimatePresence）===== */
+@keyframes wechatBackdrop {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.wechat-backdrop { animation: wechatBackdrop 0.15s ease both; }
+
+@keyframes wechatCard {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.wechat-card { animation: wechatCard 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
 /* ===== Hero 入场动画（CSS 替代 framer-motion，首屏文字立即可见）===== */
 @keyframes heroFadeInUp {
   from { opacity: 0; transform: translateY(16px); }

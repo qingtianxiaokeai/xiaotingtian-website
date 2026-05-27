@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
 interface Props {
@@ -9,24 +9,44 @@ interface Props {
   className?: string
 }
 
-const directionMap = {
-  up: { y: 30, x: 0 },
-  left: { y: 0, x: -30 },
-  right: { y: 0, x: 30 },
+const initialTransform: Record<string, string> = {
+  up:    'translateY(22px)',
+  left:  'translateX(-30px)',
+  right: 'translateX(30px)',
 }
 
+/**
+ * 滚动入场动画——用 IntersectionObserver + CSS transition 替代 framer-motion whileInView。
+ * 全程不依赖任何第三方库。
+ */
 export default function ScrollReveal({ children, delay = 0, direction = 'up', className }: Props) {
-  const initial = { opacity: 0, ...directionMap[direction] }
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    el.style.opacity = '0'
+    el.style.transform = initialTransform[direction]
+    el.style.transition = `opacity 0.65s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.65s cubic-bezier(0.16,1,0.3,1) ${delay}s`
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = '1'
+          el.style.transform = 'translate(0,0)'
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.15 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [delay, direction])
 
   return (
-    <motion.div
-      initial={initial}
-      whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
+    <div ref={ref} className={className}>
       {children}
-    </motion.div>
+    </div>
   )
 }

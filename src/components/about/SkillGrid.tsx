@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { skills } from '@/lib/data/skills'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 
@@ -38,13 +37,23 @@ export default function SkillGrid() {
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-3 transition-opacity duration-300 group-hover:opacity-0">
                 <span className="text-3xl">{skill.icon}</span>
                 <span className="text-sm font-medium text-[var(--color-text-primary)]">{skill.name}</span>
+                {/* 进度条：用 ref 回调触发 IntersectionObserver，进入视口后才展开宽度 */}
                 <div className="w-16 h-1.5 rounded-full bg-[var(--color-bg-subtle)] overflow-hidden">
-                  <motion.div
+                  <div
+                    ref={(el) => {
+                      if (!el) return
+                      const level = skill.level
+                      const delay = i * 30
+                      const observer = new IntersectionObserver(([entry]) => {
+                        if (entry.isIntersecting) {
+                          setTimeout(() => { el.style.width = `${level}%` }, delay)
+                          observer.disconnect()
+                        }
+                      }, { threshold: 0.5 })
+                      observer.observe(el)
+                    }}
                     className="h-full rounded-full bg-gradient-to-r from-[#FF6B6B] to-[#A855F7]"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.level}%` }}
-                    transition={{ duration: 0.6, delay: i * 0.03 }}
-                    viewport={{ once: true }}
+                    style={{ width: 0, transition: 'width 0.6s ease' }}
                   />
                 </div>
               </div>

@@ -1,20 +1,34 @@
 'use client'
-import { motion, useSpring, useTransform } from 'framer-motion'
-import { useMousePosition } from '@/hooks/useMousePosition'
+import { useEffect, useRef } from 'react'
 
+/** 鼠标光晕——只在有鼠标的设备上启用，移动端不渲染任何内容 */
 export default function CursorGlow() {
-  const { x, y } = useMousePosition()
-  const cfg = { stiffness: 120, damping: 22 }
-  const springX = useSpring(useTransform(x, v => v - 200), cfg)
-  const springY = useSpring(useTransform(y, v => v - 200), cfg)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // 触摸屏设备直接跳过，不创建监听器
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
+    const el = ref.current
+    if (!el) return
+    el.style.display = 'block'
+
+    const move = (e: MouseEvent) => {
+      el.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`
+    }
+    window.addEventListener('mousemove', move, { passive: true })
+    return () => window.removeEventListener('mousemove', move)
+  }, [])
 
   return (
-    <motion.div
-      className="pointer-events-none fixed z-0 h-[400px] w-[400px] rounded-full opacity-0 md:opacity-100"
+    <div
+      ref={ref}
+      className="pointer-events-none fixed z-0 h-[400px] w-[400px] rounded-full"
       style={{
-        x: springX,
-        y: springY,
+        display: 'none',
         background: 'radial-gradient(circle, rgba(var(--accent-rgb), 0.06) 0%, transparent 65%)',
+        willChange: 'transform',
+        transition: 'transform 0.08s ease-out',
       }}
     />
   )
