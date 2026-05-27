@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer'
 import PageTransition from '@/components/layout/PageTransition'
 import CursorGlow from '@/components/ui/CursorGlow'
 import ScrollProgressBar from '@/components/ui/ScrollProgressBar'
+import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister'
 
 const noto = Noto_Sans_SC({
   variable: '--font-noto',
@@ -31,12 +32,28 @@ export const metadata: Metadata = {
     locale: 'zh_CN',
     type: 'website',
   },
+  // PWA
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/icons/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    title: '小青天',
+    statusBarStyle: 'default',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'msapplication-TileColor': '#0AA9DB',
+    'msapplication-TileImage': '/icons/icon-144x144.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" className={`${noto.variable} ${space.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col antialiased bg-[var(--background)] text-[var(--foreground)]">
+        <ServiceWorkerRegister />
         <ScrollProgressBar />
         <CursorGlow />
         <Navbar />

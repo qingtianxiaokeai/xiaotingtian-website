@@ -27,6 +27,9 @@
 # claude code
 .claude/
 
+# playwright mcp
+.playwright-mcp/
+
 # local image drafts
 /images/
 
