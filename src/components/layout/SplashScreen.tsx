@@ -27,10 +27,11 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 修复 React muted prop bug：必须直接写 DOM
+    // 修复 React muted prop bug：必须直接写 DOM + attribute
     const v = videoRef.current
     if (v) {
       v.muted = true
+      v.setAttribute('muted', '')            // 确保 HTML attribute 存在（安卓 Chrome 自动播放策略需要）
       v.setAttribute('webkit-playsinline', '')
       v.play().catch(() => {})   // 静默忽略，由 10s timer 兜底
     }
@@ -69,6 +70,8 @@ export default function SplashScreen() {
       <video
         ref={videoRef}
         src="/videos/intro.mp4"
+        autoPlay          /* 安卓 Chrome 自动播放需要此属性 */
+        muted             /* React muted 渲染 bug 靠 useEffect 修复，属性仍保留 */
         preload="auto"
         playsInline
         onEnded={handleVideoEnded}
