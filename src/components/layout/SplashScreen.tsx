@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
  *   - 视频播完 + 页面已加载 → 淡出消失
  *   - 视频播完但页面未加载 → 循环播放，等页面就绪后消失
  *   - 页面加载完但视频未播完 → 等视频自然结束再消失
+ *   - 视频加载失败 / 超过 10 秒 → 强制消失（防止永久黑屏）
  * 声音：默认静音（移动端 autoplay 要求），右下角按钮可切换
  */
 export default function SplashScreen() {
@@ -15,18 +16,25 @@ export default function SplashScreen() {
   const [muted, setMuted]         = useState(true)
   const videoRef   = useRef<HTMLVideoElement>(null)
   const pageLoaded = useRef(false)
+  const didDismiss = useRef(false)
 
   useEffect(() => {
+    // 监听页面加载完成
     if (document.readyState === 'complete') {
       pageLoaded.current = true
     } else {
       const onLoad = () => { pageLoaded.current = true }
       window.addEventListener('load', onLoad)
-      return () => window.removeEventListener('load', onLoad)
     }
+
+    // 最多 10 秒兜底，防止视频加载失败导致永久黑屏
+    const timer = setTimeout(() => dismiss(), 10_000)
+    return () => clearTimeout(timer)
   }, [])
 
   function dismiss() {
+    if (didDismiss.current) return
+    didDismiss.current = true
     setFading(true)
     setTimeout(() => setDismissed(true), 600)
   }
@@ -59,6 +67,7 @@ export default function SplashScreen() {
         muted        // 初始静音，保证移动端自动播放
         playsInline  // iOS 不强制全屏
         onEnded={handleVideoEnded}
+        onError={dismiss}   // 视频加载失败立即消失
         className="splash-video"
       />
       <button
