@@ -32,11 +32,8 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 检测设备 → 触发 re-render，视频元素带 src 创建，autoPlay 可正常生效
-    const isMobile =
-      window.innerWidth <= 768 ||
-      /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
-    setVideoSrc(isMobile ? '/videos/intro-mobile.mp4' : '/videos/intro.mp4')
+    // 统一用原画质，触发 re-render 后视频元素带 src 创建，autoPlay 可正常生效
+    setVideoSrc('/videos/intro.mp4')
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
