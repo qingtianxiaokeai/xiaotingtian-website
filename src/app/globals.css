@@ -159,6 +159,25 @@ body {
   background-clip: text;
 }
 
+/* ===== Hero 入场动画（CSS 替代 framer-motion，首屏文字立即可见）===== */
+@keyframes heroFadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-fadeup {
+  opacity: 0;
+  animation: heroFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes heroRoleSwitch {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-role-switch {
+  display: inline-block;
+  animation: heroRoleSwitch 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* ===== Reduced Motion 降级 ===== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -169,4 +188,5 @@ body {
   }
   .reveal { opacity: 1; transform: none; }
   .marquee-track { animation: none; }
+  .hero-fadeup, .hero-role-switch { opacity: 1; transform: none; }
 }

@@ -20,7 +20,7 @@ export default function WechatButton({ variant = 'link' }: Props) {
   // 页面加载时后台预加载二维码图片，点击时秒开
   useEffect(() => {
     const img = new window.Image()
-    img.src = '/images/weixinjietu.png'
+    img.src = '/images/weixinjietu.webp'
   }, [])
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function WechatButton({ variant = 'link' }: Props) {
                 {/* 二维码 */}
                 <div className="mb-4 overflow-hidden rounded-xl bg-white p-3">
                   <Image
-                    src="/images/weixinjietu.png"
+                    src="/images/weixinjietu.webp"
                     alt="小青天的微信二维码"
                     width={240}
                     height={240}

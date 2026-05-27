@@ -33,7 +33,7 @@ export default function HeroSection() {
                 />
               )}
               <Image
-                src="/images/zhuyei.png"
+                src="/images/zhuyei.webp"
                 alt="小青天形象"
                 width={480}
                 height={580}
