@@ -3,14 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * 全屏视频加载画面。
- * 逻辑：
- *   - 视频播完 + 页面已加载 → 淡出消失
- *   - 视频播完但页面未加载 → 循环播放，等页面就绪后消失
- *   - 页面加载完但视频未播完 → 等视频自然结束再消失
- *   - autoplay 被拦截 / 加载失败 / 超过 10 秒 → 强制消失
- *
- * 注意：React 有已知 bug：JSX 的 muted/autoPlay 不能可靠写入 DOM，
- *       必须在 useEffect 里通过 ref 手动设置，再调 video.play()。
+ * 逻辑：视频播完 + 页面已加载 → 消失；页面未加载 → 循环等待。
+ * 兜底：超时 8s 强制消失，视频加载失败立即消失，"跳过"按钮随时可退。
  */
 export default function SplashScreen() {
   const [fading, setFading]       = useState(false)
@@ -21,14 +15,8 @@ export default function SplashScreen() {
   const didDismiss = useRef(false)
 
   useEffect(() => {
-    const v = videoRef.current
-    if (!v) return
-
-    // ★ 修复 React muted bug：直接写 DOM 属性，JSX prop 不可靠
-    v.muted = true
-
-    // 手动触发播放，catch 处理 autoplay 被拦截的情况
-    v.play().catch(() => dismiss())
+    // ★ 超时兜底必须第一个设，不受 videoRef 是否可用影响
+    const timer = setTimeout(() => dismiss(), 8_000)
 
     // 监听页面加载完成
     if (document.readyState === 'complete') {
@@ -38,8 +26,15 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 最多 10 秒兜底
-    const timer = setTimeout(() => dismiss(), 10_000)
+    // 视频播放（React muted prop bug 修复：直接写 DOM 属性）
+    const v = videoRef.current
+    if (v) {
+      v.muted = true
+      // webkit-playsinline：旧版 iOS Safari 兼容
+      v.setAttribute('webkit-playsinline', '')
+      v.play().catch(() => dismiss())
+    }
+
     return () => clearTimeout(timer)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -71,7 +66,6 @@ export default function SplashScreen() {
 
   return (
     <div className={`splash-overlay${fading ? ' splash-fade-out' : ''}`}>
-      {/* autoPlay/muted 不写 JSX prop，全由 useEffect 通过 ref 控制 */}
       <video
         ref={videoRef}
         src="/videos/intro.mp4"
@@ -80,12 +74,14 @@ export default function SplashScreen() {
         onError={dismiss}
         className="splash-video"
       />
-      <button
-        onClick={toggleMute}
-        className="splash-mute-btn"
-        aria-label={muted ? '开启声音' : '关闭声音'}
-      >
+      {/* 静音切换 */}
+      <button onClick={toggleMute} className="splash-mute-btn"
+        aria-label={muted ? '开启声音' : '关闭声音'}>
         {muted ? '🔇' : '🔊'}
+      </button>
+      {/* 跳过按钮：视频无法播放时的最终出口 */}
+      <button onClick={dismiss} className="splash-skip-btn" aria-label="跳过">
+        跳过
       </button>
     </div>
   )

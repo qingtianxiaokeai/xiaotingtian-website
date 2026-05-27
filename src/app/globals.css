@@ -238,6 +238,20 @@ body {
   transition: background 0.2s;
 }
 .splash-mute-btn:hover { background: rgba(0, 0, 0, 0.65); }
+.splash-skip-btn {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.splash-skip-btn:hover { color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.5); }
 
 /* ===== Reduced Motion 降级 ===== */
 @media (prefers-reduced-motion: reduce) {
