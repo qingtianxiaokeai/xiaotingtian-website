@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import DownloadButton from '@/components/pwa/DownloadButton'
 
 const links = [
   { href: '/', label: '首页' },
@@ -93,6 +94,10 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          {/* 下载 App 入口：列表最下方，仅手机端可见 */}
+          <li className="mt-1 pt-1 border-t border-[var(--border)]">
+            <DownloadButton onClose={() => setMenuOpen(false)} />
+          </li>
         </ul>
       )}
     </header>
