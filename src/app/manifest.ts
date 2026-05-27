@@ -1,5 +1,8 @@
 import type { MetadataRoute } from 'next'
 
+// 静态导出（GitHub Pages）兼容
+export const dynamic = 'force-static'
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: '小青天 | 个人网站',
