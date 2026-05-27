@@ -2,10 +2,12 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * 全屏视频加载画面，手机/电脑同一套逻辑。
- * - 视频真正开始播放 → 取消超时，视频播完再消失
+ * 全屏视频加载画面，手机/电脑自动选择不同清晰度。
+ * - 手机（≤768px 或移动 UA）→ intro-mobile.mp4（219 KB，快速加载）
+ * - 电脑 → intro.mp4（3.3 MB，原画质）
+ * - 视频真正开始播放 → 取消超时，让视频正常播完
  * - 视频播完但页面还在加载 → 循环，等页面就绪
- * - 20 秒兜底：视频始终无法加载时强制消失（手机慢网容忍）
+ * - 20 秒兜底：视频始终无法加载时强制消失
  */
 export default function SplashScreen() {
   const [fading, setFading]       = useState(false)
@@ -18,7 +20,6 @@ export default function SplashScreen() {
 
   useEffect(() => {
     // 兜底计时器（最先设，不受其他逻辑影响）
-    // 手机慢网给 20s 机会；视频一旦开始播放，此计时器会被取消
     timerRef.current = setTimeout(() => dismiss(), 20_000)
 
     // 监听页面加载完成
@@ -29,13 +30,22 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 修复 React muted prop bug + 补全 HTML attribute（安卓 Chrome 自动播放策略需要）
     const v = videoRef.current
     if (v) {
+      // 手机检测：屏幕宽度 ≤768px 或移动端 UA
+      const isMobile =
+        window.innerWidth <= 768 ||
+        /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+
+      // 手机用压缩版（219 KB），电脑用原版（3.3 MB）
+      v.src = isMobile ? '/videos/intro-mobile.mp4' : '/videos/intro.mp4'
+
+      // 修复 React muted prop bug + 安卓 Chrome 自动播放策略
       v.muted = true
       v.setAttribute('muted', '')
       v.setAttribute('webkit-playsinline', '')
-      v.play().catch(() => {})   // 静默忽略；autoPlay 属性会在数据就绪后自动触发
+      v.load()                  // src 变更后需要重新 load
+      v.play().catch(() => {})  // 静默忽略；autoPlay 属性会在数据就绪后触发
     }
 
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
@@ -77,9 +87,9 @@ export default function SplashScreen() {
 
   return (
     <div className={`splash-overlay${fading ? ' splash-fade-out' : ''}`}>
+      {/* src 由 useEffect 根据设备动态写入，此处留空避免预加载错误文件 */}
       <video
         ref={videoRef}
-        src="/videos/intro.mp4"
         autoPlay
         muted
         preload="auto"
