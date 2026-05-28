@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import MusicToggle from '@/components/ui/MusicToggle'
 import DownloadButton from '@/components/pwa/DownloadButton'
 
 const links = [
@@ -64,6 +65,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <MusicToggle />
           <ThemeToggle />
           <button
             className="flex md:hidden items-center justify-center h-9 w-9 rounded-lg hover:bg-[var(--color-bg-subtle)] transition-colors"

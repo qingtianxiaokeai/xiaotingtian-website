@@ -8,6 +8,7 @@ import CursorGlow from '@/components/ui/CursorGlow'
 import ScrollProgressBar from '@/components/ui/ScrollProgressBar'
 import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister'
 import SplashScreen from '@/components/layout/SplashScreen'
+import { MusicProvider } from '@/context/MusicContext'
 
 const noto = Noto_Sans_SC({
   variable: '--font-noto',
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN" className={`${noto.variable} ${space.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col antialiased bg-[var(--background)] text-[var(--foreground)]">
+        <MusicProvider>
         <SplashScreen />
         {/* 在 React 加载前提前捕获 PWA 安装事件，避免时序问题 */}
         <script dangerouslySetInnerHTML={{ __html: `window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__pwaPrompt=e;});` }} />
@@ -65,6 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1 pt-20">{children}</main>
         </PageTransition>
         <Footer />
+        </MusicProvider>
       </body>
     </html>
   )
