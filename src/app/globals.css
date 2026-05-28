@@ -220,24 +220,6 @@ body {
   height: 100%;
   object-fit: cover;
 }
-/* 按钮 */
-.splash-mute-btn {
-  position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  font-size: 1.4rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: none;
-  border-radius: 50%;
-  width: 2.5rem;
-  height: 2.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-.splash-mute-btn:hover { background: rgba(0, 0, 0, 0.65); }
 .splash-skip-btn {
   position: absolute;
   bottom: 1.5rem;

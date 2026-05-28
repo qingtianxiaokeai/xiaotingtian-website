@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { Volume2, VolumeX } from 'lucide-react'
 
 /**
  * 全屏视频加载画面。
@@ -123,9 +124,12 @@ export default function SplashScreen() {
           className="splash-video"
         />
       )}
-      <button onClick={toggleMute} className="splash-mute-btn"
-        aria-label={muted ? '开启声音' : '关闭声音'}>
-        {muted ? '🔇' : '🔊'}
+      <button
+        onClick={toggleMute}
+        className="absolute bottom-6 right-6 flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-bg-subtle)] text-[var(--color-text-secondary)]"
+        aria-label={muted ? '开启声音' : '关闭声音'}
+      >
+        {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
       </button>
       <button onClick={dismiss} className="splash-skip-btn" aria-label="跳过">
         跳过
