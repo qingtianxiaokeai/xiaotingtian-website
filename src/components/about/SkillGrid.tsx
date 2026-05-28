@@ -5,6 +5,17 @@ import ScrollReveal from '@/components/ui/ScrollReveal'
 
 const categories = ['全部', 'AI 数据训练']
 
+const colors = [
+  '#EFF6FF', // 淡蓝
+  '#FFF0F3', // 淡粉
+  '#F0FDF4', // 淡绿
+  '#F5F3FF', // 淡紫
+  '#FFFBEB', // 淡黄
+  '#ECFEFF', // 淡青
+  '#FFF1F2', // 淡玫
+  '#EEF2FF', // 淡靛
+]
+
 export default function SkillGrid() {
   const [category, setCategory] = useState('全部')
   const filtered = category === '全部' ? skills : skills.filter(s => s.category === category)
@@ -32,36 +43,12 @@ export default function SkillGrid() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {filtered.map((skill, i) => (
           <ScrollReveal key={skill.name} delay={i * 0.04}>
-            <div className="group relative overflow-hidden rounded-2xl h-32 cursor-pointer bg-[var(--color-bg-surface)] border border-[var(--color-bg-subtle)] hover:border-[#FF6B6B]/30 transition-colors">
-              {/* 默认显示 */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-3 transition-opacity duration-300 group-hover:opacity-0">
-                <span className="text-3xl">{skill.icon}</span>
-                <span className="text-sm font-medium text-[var(--color-text-primary)]">{skill.name}</span>
-                {/* 进度条：用 ref 回调触发 IntersectionObserver，进入视口后才展开宽度 */}
-                <div className="w-16 h-1.5 rounded-full bg-[var(--color-bg-subtle)] overflow-hidden">
-                  <div
-                    ref={(el) => {
-                      if (!el) return
-                      const level = skill.level
-                      const delay = i * 30
-                      const observer = new IntersectionObserver(([entry]) => {
-                        if (entry.isIntersecting) {
-                          setTimeout(() => { el.style.width = `${level}%` }, delay)
-                          observer.disconnect()
-                        }
-                      }, { threshold: 0.5 })
-                      observer.observe(el)
-                    }}
-                    className="h-full rounded-full bg-gradient-to-r from-[#FF6B6B] to-[#A855F7]"
-                    style={{ width: 0, transition: 'width 0.6s ease' }}
-                  />
-                </div>
-              </div>
-              {/* hover 显示 */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-[#FF6B6B]/10 to-[#A855F7]/10 rounded-2xl p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <span className="text-xs font-medium text-[#FF6B6B]">熟练度 {skill.level}%</span>
-                <p className="text-xs text-center text-[var(--color-text-secondary)] leading-relaxed">{skill.description}</p>
-              </div>
+            <div
+              className="relative rounded-2xl p-4 min-h-[7rem] cursor-default transition-transform duration-200 hover:scale-150 hover:z-10"
+              style={{ backgroundColor: colors[i % colors.length] }}
+            >
+              <p className="font-semibold text-sm text-[var(--color-text-primary)]">{skill.name}</p>
+              <p className="text-xs mt-1 leading-relaxed text-[var(--color-text-secondary)]">{skill.description}</p>
             </div>
           </ScrollReveal>
         ))}
