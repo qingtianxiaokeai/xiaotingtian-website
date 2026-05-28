@@ -33,8 +33,11 @@ export default function SplashScreen() {
       window.addEventListener('load', onLoad)
     }
 
-    // 统一使用原画质（3.4 MB），手机端若太卡可改回 intro-mobile-hd.mp4
-    setVideoSrc('/videos/intro.mp4')
+    // 手机用 590 KB 压缩版，电脑用原画质
+    const isMobile =
+      window.innerWidth <= 768 ||
+      /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+    setVideoSrc(isMobile ? '/videos/intro-mobile-hd.mp4' : '/videos/intro.mp4')
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
