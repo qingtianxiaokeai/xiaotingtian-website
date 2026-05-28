@@ -99,6 +99,14 @@ export default function SplashScreen() {
 
   return (
     <div className={`splash-overlay${fading ? ' splash-fade-out' : ''}`}>
+      {/* 无条件渲染，SSR 直接输出到 HTML，浏览器收到页面即开始加载 poster */}
+      <img
+        src="/videos/intro-poster.jpg"
+        alt=""
+        aria-hidden="true"
+        className="splash-video"
+        fetchPriority="high"
+      />
       {videoSrc && (
         <video
           ref={videoRef}

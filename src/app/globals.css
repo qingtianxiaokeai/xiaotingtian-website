@@ -205,8 +205,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  /* poster 作为 CSS 背景，浏览器加载 CSS 时立即显示，无需等待 JS */
-  background: #000 url('/videos/intro-poster.jpg') center / cover no-repeat;
+  background: #000;
   transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 .splash-fade-out {
