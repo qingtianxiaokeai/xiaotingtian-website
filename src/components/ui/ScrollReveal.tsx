@@ -34,7 +34,7 @@ export default function ScrollReveal({ children, delay = 0, direction = 'up', cl
       ([entry]) => {
         if (entry.isIntersecting) {
           el.style.opacity = '1'
-          el.style.transform = 'translate(0,0)'
+          el.style.transform = ''
           observer.disconnect()
         }
       },
