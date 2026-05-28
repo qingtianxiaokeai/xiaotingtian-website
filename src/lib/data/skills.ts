@@ -1,21 +1,14 @@
 import type { Skill, TimelineItem } from '@/types'
 
 export const skills: Skill[] = [
-  { name: '数据标注 & 清洗', icon: '🏷️', category: 'AI 数据训练', level: 92, description: '高质量数据标注与清洗，服务于大模型训练流程' },
-  { name: 'Prompt Engineering', icon: '🤖', category: 'AI 数据训练', level: 88, description: '精准设计提示词，优化模型输出质量与对齐效果' },
-  { name: '模型评估 & RLHF', icon: '📊', category: 'AI 数据训练', level: 85, description: '基于人类反馈的强化学习数据生产与质量把控' },
-  { name: 'Python', icon: '🐍', category: 'AI 数据训练', level: 80, description: '数据处理脚本、自动化标注流程与批量分析' },
-  { name: '电路设计', icon: '⚡', category: '电气工程', level: 88, description: '模拟与数字电路设计，原理图绘制与分析' },
-  { name: 'PCB 设计', icon: '🔌', category: '电气工程', level: 82, description: '使用 EDA 工具进行 PCB 布局布线与制板' },
-  { name: '电气系统分析', icon: '🔬', category: '电气工程', level: 85, description: '电力系统仿真、故障诊断与参数优化' },
-  { name: 'AutoCAD / EDA', icon: '📐', category: '电气工程', level: 78, description: 'Altium Designer / KiCad 等 EDA 工具使用' },
-  { name: 'Arduino / ESP32', icon: '🛠️', category: '嵌入式 & 单片机', level: 90, description: '快速原型开发，物联网设备与传感器集成' },
-  { name: 'STM32 / ARM', icon: '💡', category: '嵌入式 & 单片机', level: 85, description: 'HAL 库开发，RTOS 任务调度与外设驱动编写' },
-  { name: 'C / C++', icon: '⚙️', category: '嵌入式 & 单片机', level: 88, description: '嵌入式底层编程，内存管理与实时控制逻辑' },
-  { name: '硬件调试 & 焊接', icon: '🔧', category: '嵌入式 & 单片机', level: 82, description: '示波器、逻辑分析仪调试，SMD 精细焊接' },
-  { name: '视频创作 & 剪辑', icon: '🎬', category: '创意内容', level: 85, description: '科技类内容脚本、拍摄与后期剪辑制作' },
-  { name: '内容策划', icon: '✍️', category: '创意内容', level: 88, description: '技术科普与创意选题，构建有价值的内容矩阵' },
-  { name: '图像 & 平面设计', icon: '🎨', category: '创意内容', level: 75, description: '封面设计、信息图表与品牌视觉表达' },
+  { name: 'Prompt 调优', icon: '🤖', category: 'AI 数据训练', level: 88, description: '精通系统提示词设计与迭代优化，通过结构化指令引导模型精准理解任务意图，持续提升输出质量与一致性' },
+  { name: '数据标注 & 清洗', icon: '🏷️', category: 'AI 数据训练', level: 92, description: '高质量数据标注与清洗，涵盖多轮对话、指令遵循与格式规范，为大模型训练流程奠定数据基础' },
+  { name: 'SFT 监督微调', icon: '🎯', category: 'AI 数据训练', level: 82, description: '基于高质量标注数据对基座模型进行监督微调，涵盖指令遵循、格式规范及领域适配，使模型稳定输出符合预期的响应' },
+  { name: '模型评估 & RLHF', icon: '📊', category: 'AI 数据训练', level: 85, description: '基于人类反馈的强化学习数据生产与质量把控，构建偏好排序数据以对齐模型输出与人类价值观' },
+  { name: '高质量数据构建', icon: '🗂️', category: 'AI 数据训练', level: 86, description: '系统化构建训练数据集，涵盖人工撰写、模型合成、多样性采样与严格质量过滤，确保数据准确性与分布均衡' },
+  { name: 'Workflow 提效', icon: '⚡', category: 'AI 数据训练', level: 80, description: '设计并优化 AI 训练全流程 Pipeline，涵盖数据采集、标注、评测与交付，通过自动化工具链提升协作效率' },
+  { name: '边界 Case 优化', icon: '🔍', category: 'AI 数据训练', level: 83, description: '识别并攻克模型在极端输入、长尾场景下的失败案例，通过针对性数据补充与策略调整持续压缩能力盲区' },
+  { name: 'Python 数据处理', icon: '🐍', category: 'AI 数据训练', level: 80, description: '数据处理脚本、自动化标注流程与批量质检分析，提升数据生产效率' },
 ]
 
 export const timeline: TimelineItem[] = [
@@ -23,24 +16,6 @@ export const timeline: TimelineItem[] = [
     year: '2024 - 至今',
     title: 'AI 数据训练师',
     organization: 'AI 训练平台',
-    description: '从事大模型训练数据生产，负责数据标注、质量审核与 RLHF 反馈，持续输出高质量科技内容。',
-  },
-  {
-    year: '2023 - 至今',
-    title: '创意内容创造者',
-    organization: '独立创作',
-    description: '专注科技与嵌入式方向的内容创作，分享单片机项目、电气知识与 AI 行业见解。',
-  },
-  {
-    year: '2021 - 至今',
-    title: '电气工程师',
-    organization: '电气工程领域',
-    description: '从事电路设计、PCB 布板与电气系统分析，积累丰富的工业与消费电子项目经验。',
-  },
-  {
-    year: '2019 - 至今',
-    title: '单片机爱好发烧友',
-    organization: '硬件创客社区',
-    description: '深度玩转 Arduino、STM32、ESP32，参与开源硬件项目，热衷于将代码与电路融为一体。',
+    description: '从事大模型训练数据生产，负责数据标注、质量审核与 RLHF 反馈，持续输出高质量训练数据。',
   },
 ]

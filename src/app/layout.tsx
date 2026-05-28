@@ -55,6 +55,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="zh-CN" className={`${noto.variable} ${space.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col antialiased bg-[var(--background)] text-[var(--foreground)]">
+        {/* 视频预加载：浏览器收到 HTML 即开始下载，不等 JS 执行 */}
+        <link rel="preload" as="video" href="/videos/intro.mp4" media="(min-width: 769px)" type="video/mp4" />
+        <link rel="preload" as="video" href="/videos/intro-mobile-hd.mp4" media="(max-width: 768px)" type="video/mp4" />
         <MusicProvider>
         <SplashScreen />
         {/* 在 React 加载前提前捕获 PWA 安装事件，避免时序问题 */}

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { skills } from '@/lib/data/skills'
 import ScrollReveal from '@/components/ui/ScrollReveal'
 
-const categories = ['全部', 'AI 数据训练', '电气工程', '嵌入式 & 单片机', '创意内容']
+const categories = ['全部', 'AI 数据训练']
 
 export default function SkillGrid() {
   const [category, setCategory] = useState('全部')
